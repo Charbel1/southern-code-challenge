@@ -16,18 +16,21 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from core import views
+import core.views.booking_view
+import core.views.pricing_rule_view
+import core.views.property_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
 
-    path('get_modify_delete_one_property/<int:id>/', views.GetModifyDeleteOnePropertyDataView.as_view()),
-    path('get_all_property/', views.GetAllPropertyDataView.as_view()),
-    path('create_property/', views.PropertyCreateView.as_view()),
-    path('get_create_pricing_rule/<int:property_id>/', views.GetSetPrincingRulePropertyView.as_view()),
-    path('get_one_pricing_rule/<int:pricing_id>',views.GetOnePrincingRulePropertyView.as_view()),
-    path('delete_modify_one_pricing_rule/<int:pricing_id>', views.ModifyDeleteOnePricingRuleProperty.as_view()),
+    path('get_modify_delete_one_property/<int:id>/', core.views.property_view.GetModifyDeleteOnePropertyDataView.as_view()),
+    path('get_all_property/', core.views.property_view.GetAllPropertyDataView.as_view()),
+    path('create_property/', core.views.property_view.PropertyCreateView.as_view()),
+    path('get_create_pricing_rule/<int:property_id>/', core.views.pricing_rule_view.GetSetPrincingRulePropertyView.as_view()),
+    path('get_one_pricing_rule/<int:pricing_id>', core.views.pricing_rule_view.GetOnePrincingRulePropertyView.as_view()),
+    path('delete_modify_one_pricing_rule/<int:pricing_id>', core.views.pricing_rule_view
+         .ModifyDeleteOnePricingRuleProperty.as_view()),
     
-    path('prueba', views.SetBookingView.as_view()),
+    path('prueba', core.views.booking_view.SetBookingView.as_view()),
 
 ]   
