@@ -1,15 +1,11 @@
 from datetime import datetime
 
-from django.db.models import Max
-from django.db.models import Q
 from django.http import HttpResponse
 from django.http import JsonResponse
 from rest_framework.views import APIView
 
 from core.logic.booking_logic import BookingLogic
 from core.logic.pricing_rule_logic import PricingRuleLogic
-from core.models import PricingRule
-
 
 
 class SetBookingView(APIView):
@@ -37,7 +33,10 @@ class SetBookingView(APIView):
         total_specific_day = booking_utility.get_sum_specific_day(list_query)
         final_price = booking_utility.get_final_price(pricing_rule_obj.price_modifier,pricing_rule_obj.property.base_price,total_specific_day,
                                                       stay_length,count_specific_day)
+
         data_out = booking_utility.get_data_out_json(pricing_rule_obj.property.base_price,date_start,date_end,pricing_rule_obj)
+
+
 
         return HttpResponse(JsonResponse({"data": data_out}), content_type="application/json",
                             status=200)
