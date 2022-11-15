@@ -35,6 +35,6 @@ urlpatterns = [
          .UpdateOnePricingRuleProperty.as_view()),
 
 
-    path('prueba', core.views.booking_view.SetBookingView.as_view()),
+    path('prueba', core.views.booking_view.SetBookingView2.as_view()),
 
 ]   

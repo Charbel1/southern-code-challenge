@@ -1,5 +1,8 @@
 from datetime import datetime
 
+from django.db.models import Max
+from django.db.models import Q
+
 from core.models import PricingRule
 from core.models import Property
 from core.utility.utility_code import ValidationDate
@@ -58,3 +61,49 @@ class PricingRuleLogic():
         self._pricing_rule.specific_day = self._specific_day
         self._pricing_rule.save()
         return  self._pricing_rule
+
+    def get_max_stay_length_pricing_rule_property(self, property_id :int , stay_length :int ):
+        self._max_stay_length = PricingRule.objects.filter(property_id=property_id, min_stay_length__lte=stay_length)\
+            .aggregate(Max('min_stay_length'))["min_stay_length__max"]
+        return self._max_stay_length
+
+    def get_max_value_pricing_rule_property(self,max_stay_length : int , property_id :int , stay_length :int ):
+        self._max_value = PricingRule.objects.filter(Q(min_stay_length= max_stay_length,
+                                                 property_id=property_id,
+                                                 min_stay_length__lte=stay_length)
+                                               ).aggregate(Max('price_modifier'))["price_modifier__max"]
+        return self._max_value
+
+    def get_max_pricing_rule_obj(self,price_modifier,property_id,stay_length):
+        self._max_pricing_rule_obj = PricingRule.objects.filter(Q(price_modifier=price_modifier,
+                                                        property_id=property_id,
+                                                        min_stay_length__lte=stay_length)) \
+            .order_by("id").first()
+        return self._max_pricing_rule_obj
+
+    def get_specifict_days_with_max_fixed_price_rule(self,property_id : int, stay_length : int,
+                                                     date_start : datetime, date_end : datetime):
+        query_date = Q()
+        query_date &= Q(specific_day__range=(date_start,date_end))
+        pricing_rules = PricingRule.objects.filter(Q(property_id=property_id, min_stay_length__lte=stay_length))
+
+        pricing_rules_spe_day = pricing_rules.filter(Q(specific_day__isnull=False) & query_date)
+        list_specif_day_fix_pric= pricing_rules_spe_day.values('specific_day').annotate(max_id=Max('fixed_price'))
+        return list_specif_day_fix_pric
+
+    def get_sum_specific_day(self, list_specific_day : list):
+        suma = 0
+        for value in list_specific_day:
+            suma += value["max_id"]
+            # print(value["specific_day"], value["max_id"])
+
+        return suma
+
+    def get_final_price(self,price_modifier,property_base_price,total_specific_day,stay_length,count_specific_day):
+        valor_with_desc = ((price_modifier * property_base_price) / 100) + \
+                          property_base_price
+        total_base = ((stay_length - count_specific_day) * valor_with_desc)
+        # desc = (max_pricing_rule.price_modifier *  total_base) / 100
+        total_all = total_base + total_specific_day
+
+        return total_all
