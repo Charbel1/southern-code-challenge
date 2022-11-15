@@ -26,7 +26,8 @@ urlpatterns = [
     path('get_modify_delete_one_property/<int:id>/', core.views.property_view.GetModifyDeleteOnePropertyDataView.as_view()),
     path('get_all_property/', core.views.property_view.GetAllPropertyDataView.as_view()),
     path('create_property/', core.views.property_view.PropertyCreateView.as_view()),
-    path('get_create_pricing_rule/<int:property_id>/', core.views.pricing_rule_view.GetSetPrincingRulePropertyView.as_view()),
+    path('get_pricing_rule/<int:property_id>/', core.views.pricing_rule_view.GetPrincingRulePropertyView.as_view()),
+    path('create_pricing_rule/', core.views.pricing_rule_view.CreatePrincingRulePropertyView.as_view()),
     path('get_one_pricing_rule/<int:pricing_id>', core.views.pricing_rule_view.GetOnePrincingRulePropertyView.as_view()),
     path('delete_modify_one_pricing_rule/<int:pricing_id>', core.views.pricing_rule_view
          .ModifyDeleteOnePricingRuleProperty.as_view()),

@@ -2,27 +2,12 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from rest_framework.views import APIView
 
+from core.logic.pricing_rule_logic import PricingRuleLogic
 from core.models import PricingRule
 from core.models import Property
 
 
-class GetSetPrincingRulePropertyView(APIView):
-    def post(self, request,property_id, format=None):
-        property = Property.objects.get(id=property_id)
-        price_modifier = request.data["price_modifier"]
-        min_stay_length = request.data["min_stay_length"]
-        fixed_price= request.data["fixed_price"]
-        specific_day = request.data["specific_day"]
-        pricing_rule = PricingRule()
-        pricing_rule.property_id = property.id
-        pricing_rule.price_modifier = price_modifier
-        pricing_rule.min_stay_length = min_stay_length
-        pricing_rule.fixed_price = fixed_price
-        pricing_rule.specific_day = specific_day
-
-        pricing_rule.save()
-
-        return HttpResponse(JsonResponse({"pricing_rule_id": pricing_rule.id}), content_type="application/json", status=200)
+class GetPrincingRulePropertyView(APIView):
 
     def get(self, request, property_id, format=None):
         data_out = []
@@ -32,6 +17,22 @@ class GetSetPrincingRulePropertyView(APIView):
 
         return HttpResponse(JsonResponse({"pricing_rule_list": data_out}), content_type="application/json",
                             status=200)
+
+class CreatePrincingRulePropertyView(APIView):
+    def post(self, request, format=None):
+        pricing_logic = PricingRuleLogic()
+        try:
+            pricing_logic.validate_data(request.data)
+            pricing_rule_obj = pricing_logic.create_pricing_rule()
+        except Property.DoesNotExist:
+           return HttpResponse(JsonResponse({"error": "property does not exist" }), content_type="application/json",
+                               status=400)
+        except Exception:
+            return HttpResponse(JsonResponse({"error": "Error format data"}), content_type="application/json",
+                                status=400)
+
+
+        return HttpResponse(JsonResponse({"pricing_rule_id": pricing_rule_obj.id}), content_type="application/json", status=200)
 
 
 class GetOnePrincingRulePropertyView(APIView):

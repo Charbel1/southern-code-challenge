@@ -54,7 +54,7 @@ class SetBookingView(APIView):
             suma += a["max_id"]
             print(a["specific_day"],a["max_id"])
 
-        valor_with_desc =( (max_pricing_rule.price_modifier *  max_pricing_rule.property.base_price) / 100 ) + max_pricing_rule.property.base_price
+        valor_with_desc = ((max_pricing_rule.price_modifier * max_pricing_rule.__property.base_price) / 100) + max_pricing_rule.__property.base_price
         total_base = ((stay_length - z.count()) * valor_with_desc)
         # desc = (max_pricing_rule.price_modifier *  total_base) / 100
         total_all= total_base + suma
