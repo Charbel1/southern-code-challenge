@@ -29,9 +29,12 @@ urlpatterns = [
     path('get_pricing_rule/<int:property_id>/', core.views.pricing_rule_view.GetPrincingRulePropertyView.as_view()),
     path('create_pricing_rule/', core.views.pricing_rule_view.CreatePrincingRulePropertyView.as_view()),
     path('get_one_pricing_rule/<int:pricing_id>', core.views.pricing_rule_view.GetOnePrincingRulePropertyView.as_view()),
-    path('delete_modify_one_pricing_rule/<int:pricing_id>', core.views.pricing_rule_view
-         .ModifyDeleteOnePricingRuleProperty.as_view()),
-    
+    path('delete_one_pricing_rule/<int:pricing_id>', core.views.pricing_rule_view
+         .DeleteOnePricingRuleProperty.as_view()),
+    path('update_one_pricing_rule/', core.views.pricing_rule_view
+         .UpdateOnePricingRuleProperty.as_view()),
+
+
     path('prueba', core.views.booking_view.SetBookingView.as_view()),
 
 ]   

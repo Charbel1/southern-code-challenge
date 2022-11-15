@@ -19,6 +19,9 @@ class PricingRuleLogic():
 
         utility_date = ValidationDate()
 
+        if "pricing_rule_id" in data:
+            self._pricing_rule = PricingRule.objects.get(id=data["pricing_rule_id"])
+
         if "property_id" in data:
             self._property = Property.objects.get(id = data["property_id"])
 
@@ -47,3 +50,11 @@ class PricingRuleLogic():
         self._pricing_rule.specific_day = self._specific_day
         self._pricing_rule.save()
         return self._pricing_rule
+
+    def update_pricing_rule(self):
+        self._pricing_rule.price_modifier = self._price_modifier
+        self._pricing_rule.min_stay_length = self._min_stay_length
+        self._pricing_rule.fixed_price = self._fixed_price
+        self._pricing_rule.specific_day = self._specific_day
+        self._pricing_rule.save()
+        return  self._pricing_rule
