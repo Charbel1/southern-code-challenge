@@ -9,7 +9,7 @@ from core.models import Property
 
 class GetPrincingRulePropertyView(APIView):
 
-    def get(self, request, property_id, format=None):
+    def get(self, request, property_id):
         data_out = []
         list_princing_rule = PricingRule.objects.filter(property_id=property_id)
         for pricing_rule in list_princing_rule:
@@ -19,7 +19,7 @@ class GetPrincingRulePropertyView(APIView):
                             status=200)
 
 class CreatePrincingRulePropertyView(APIView):
-    def post(self, request, format=None):
+    def post(self, request):
         pricing_logic = PricingRuleLogic()
         try:
             pricing_logic.validate_data(request.data)
@@ -36,7 +36,7 @@ class CreatePrincingRulePropertyView(APIView):
 
 
 class GetOnePrincingRulePropertyView(APIView):
-    def get(self, request, pricing_id, format=None):
+    def get(self, request, pricing_id):
         data_out = PricingRule.objects.get(id=pricing_id).get_json_data()
 
         return HttpResponse(JsonResponse({"pricing_rule": data_out}), content_type="application/json",
