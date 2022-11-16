@@ -50,7 +50,8 @@ class BookingLogic():
                   :param count_specific_day : total of specific days
                   :returns: total value
                   """
-
+        if price_modifier is None:
+            price_modifier = 0
         valor_with_desc = ((price_modifier * property_base_price) / 100) + \
                           property_base_price
 
@@ -80,7 +81,7 @@ class BookingLogic():
                     "Booking":{
                             "date_start": date_start,
                             "date_end":date_end,
-                            "stay length" : (date_start-date_end).days + 1
+                            "stay length" : (date_end -date_start).days + 1
                             },
                     "Pricing Rules":{
                             "Pricing Rules":f"min_stay_length:{pricing_rule.min_stay_length} price_modifier {pricing_rule.price_modifier}",

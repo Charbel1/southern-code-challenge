@@ -130,6 +130,8 @@ class PricingRuleLogic():
                                                         property_id=property_id,
                                                         min_stay_length__lte=stay_length)) \
             .order_by("id").first()
+        if self._max_pricing_rule_obj is None:
+            self._max_pricing_rule_obj = PricingRule()
         return self._max_pricing_rule_obj
 
     def get__max_pricing_rule_obj(self) -> PricingRule:

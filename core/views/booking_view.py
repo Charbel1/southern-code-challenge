@@ -28,12 +28,13 @@ class SetBookingView(APIView):
         final_price =utility.calcutate_final_price_booking(property_id, date_start_format, date_end_format)
         pricing_rule_obj = utility.get_pricing_rule_obj_generate()
         booking_utility = utility.get_booking_utility()
+        property =utility.get_property()
 
-        data_out = booking_utility.generate_data_out_json(final_price,pricing_rule_obj.property.base_price,
+        data_out = booking_utility.generate_data_out_json(final_price,property.base_price,
                                                           date_start, date_end, pricing_rule_obj)
 
         booking = Booking()
-        booking.property= pricing_rule_obj.property
+        booking.property= property
         booking.date_end = date_end
         booking.date_start = date_start
         booking.final_price =booking_utility.get_final_price()
