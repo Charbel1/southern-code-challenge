@@ -147,10 +147,24 @@ class PricingRuleLogic():
                   """
         query_date = Q()
         query_date &= Q(specific_day__range=(date_start,date_end))
-        pricing_rules = PricingRule.objects.filter(Q(property_id=property_id, min_stay_length__lte=stay_length))
+        pricing_rules_none = PricingRule.objects.filter(Q(property_id=property_id))
 
-        pricing_rules_spe_day = pricing_rules.filter(Q(specific_day__isnull=False) & query_date)
-        list_specif_day_fix_pric= pricing_rules_spe_day.values('specific_day').annotate(max_id=Max('fixed_price'))
+        pricing_rules_spe_day = pricing_rules_none.filter(Q(specific_day__isnull=False) & query_date)
+
+        exclude = []
+        for pricing_rule in pricing_rules_spe_day:
+            if pricing_rule.min_stay_length is not None:
+                if pricing_rule.min_stay_length > stay_length:
+                    exclude.append(pricing_rule.id)
+
+        total = pricing_rules_spe_day.exclude(id__in=exclude)
+
+
+
+
+
+
+        list_specif_day_fix_pric= total.values('specific_day').annotate(max_id=Max('fixed_price'))
 
         return list_specif_day_fix_pric
 

@@ -22,11 +22,6 @@ class PropertyCreateView(APIView):
 
         return HttpResponse(JsonResponse({"Error": property_seri.errors}), content_type="application/json", status=400)
 
-        # property_obj = Property()
-        # property_obj.name = name
-        # property_obj.base_price = price
-        # property_obj.type = type
-        # property_obj.save()
 
 
 
