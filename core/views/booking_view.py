@@ -44,7 +44,7 @@ class SetBookingView(APIView):
         booking_utility.calculate_final_price(pricing_rule_obj.price_modifier, pricing_rule_obj.property.base_price, total_specific_day,
                                               stay_length, count_specific_day)
 
-        data_out = booking_utility.get_data_out_json(pricing_rule_obj.property.base_price,date_start,date_end,pricing_rule_obj)
+        data_out = booking_utility.generate_data_out_json(pricing_rule_obj.property.base_price, date_start, date_end, pricing_rule_obj)
 
         booking = Booking()
         booking.property= pricing_rule_obj.property
@@ -56,3 +56,36 @@ class SetBookingView(APIView):
 
         return HttpResponse(JsonResponse({"data": data_out}), content_type="application/json",
                             status=200)
+
+class GetBookingPropertyView(APIView):
+    def get(self,request,property_id):
+        data_out = []
+        booking_list = Booking.objects.filter(property_id = property_id )
+        for booking in booking_list:
+            data_out.append(booking.get_json_data())
+
+        return HttpResponse(JsonResponse({"data": data_out}), content_type="application/json",
+                            status=200)
+
+class GetAllBookingView(APIView):
+    def get(self,request):
+        data_out = []
+        booking_list = Booking.objects.filter()
+        for booking in booking_list:
+            data_out.append(booking.get_json_data())
+
+        return HttpResponse(JsonResponse({"data": data_out}), content_type="application/json",
+                            status=200)
+
+
+class GetBookingByIdView(APIView):
+    def get(self,request,booking_id):
+        data_out = []
+        booking_list = Booking.objects.filter(id = booking_id)
+        for booking in booking_list:
+            data_out.append(booking.get_json_data())
+
+        return HttpResponse(JsonResponse({"data": data_out}), content_type="application/json",
+                            status=200)
+
+

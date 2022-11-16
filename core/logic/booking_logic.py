@@ -30,7 +30,7 @@ class BookingLogic():
         return self.total_all
 
 
-    def get_data_out_json(self,base_price :int ,date_start : datetime, date_end :datetime, pricing_rule : PricingRule):
+    def generate_data_out_json(self, base_price :int, date_start : datetime, date_end :datetime, pricing_rule : PricingRule):
         data_out = {
                     "Property base_price " : base_price,
                     "Booking":{

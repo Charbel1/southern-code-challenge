@@ -89,5 +89,6 @@ class PricingRuleLogic():
 
         pricing_rules_spe_day = pricing_rules.filter(Q(specific_day__isnull=False) & query_date)
         list_specif_day_fix_pric= pricing_rules_spe_day.values('specific_day').annotate(max_id=Max('fixed_price'))
+
         return list_specif_day_fix_pric
 

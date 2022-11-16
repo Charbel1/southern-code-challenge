@@ -65,3 +65,24 @@ class Booking(models.Model):
     """date_end: Last date of the booking"""
     final_price = models.FloatField(null=True, blank=True)
     """final_price: Calculated final price"""
+    pricing_rules_used = models.CharField(max_length=900, blank=True, null=True)
+    """pricing_rules_used: princing rule used """
+    specific_day_rules_used = models.CharField(max_length=900, blank=True, null=True)
+    """specific_day_rules_used: specific days fixed price used """
+
+    def get_json_data(self):
+        data_out = {
+                "Property base_price ": self.property.base_price,
+                "Booking"             : {
+                        "date_start" : self.date_start,
+                        "date_end"   : self.date_end,
+                        "stay length": (self.date_start - self.date_end).days + 1
+                        },
+                "Pricing Rules"       : {
+                        "Pricing Rules": self.pricing_rules_used,
+                        "specific_day" : self.specific_day_rules_used
+                        },
+                "Final Price"         : self.final_price,
+                "booking_id "          :self.id
+                }
+        return data_out
