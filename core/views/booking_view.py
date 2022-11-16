@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 
 from core.logic.pricing_rule_logic import PricingRuleLogic
 from core.models import Booking
+from core.models import Property
 from core.utility.utility_code import ValidationDate
 from core.views.calculate_booking import UtilityCalculateBooking
 
@@ -25,7 +26,11 @@ class SetBookingView(APIView):
         if valid_utility.validate_change_greater(date_start,date_end):
             return HttpResponse(JsonResponse({"error": "order of dates is reversed"}), content_type="application/json",
                                 status=200)
-        final_price =utility.calcutate_final_price_booking(property_id, date_start_format, date_end_format)
+        try:
+            final_price =utility.calcutate_final_price_booking(property_id, date_start_format, date_end_format)
+        except Property.DoesNotExist:
+            return HttpResponse(JsonResponse({"error": "property does not exist"}), content_type="application/json",
+                                status=400)
         pricing_rule_obj = utility.get_pricing_rule_obj_generate()
         booking_utility = utility.get_booking_utility()
         property =utility.get_property()
