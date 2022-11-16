@@ -2,17 +2,17 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from rest_framework.views import APIView
 
-from core.logic.booking_logic import BookingLogic
 from core.logic.pricing_rule_logic import PricingRuleLogic
 from core.models import Booking
 from core.utility.utility_code import ValidationDate
+from core.views.calculate_booking import UtilityCalculateBooking
 
 
 class SetBookingView(APIView):
     def post(self,request):
         pricing_utility = PricingRuleLogic()
-        booking_utility = BookingLogic()
         valid_utility = ValidationDate()
+        utility = UtilityCalculateBooking()
 
         property_id = request.data["property_id"]
         date_start_format = request.data["date_start"]
@@ -25,26 +25,12 @@ class SetBookingView(APIView):
         if valid_utility.validate_change_greater(date_start,date_end):
             return HttpResponse(JsonResponse({"error": "order of dates is reversed"}), content_type="application/json",
                                 status=200)
+        final_price =utility.calcutate_final_price_booking(property_id, date_start_format, date_end_format)
+        pricing_rule_obj = utility.get_pricing_rule_obj_generate()
+        booking_utility = utility.get_booking_utility()
 
-        # the number of days between the 2 dates is taken out
-        stay_length = (date_end - date_start).days + 1
-
-
-        max_stay_length = pricing_utility.get_max_stay_length_pricing_rule_property(property_id, stay_length)
-
-        max_value2 = pricing_utility.get_max_value_pricing_rule_property(max_stay_length, property_id, stay_length)
-
-        pricing_rule_obj = pricing_utility.get_max_pricing_rule_obj(max_value2, property_id, stay_length)
-
-        list_query = pricing_utility.get_specifict_days_with_max_fixed_price_rule(property_id, stay_length, date_start,
-                                                                                 date_end)
-        count_specific_day = len(list_query)
-
-        total_specific_day = booking_utility.get_sum_specific_day(list_query)
-        booking_utility.calculate_final_price(pricing_rule_obj.price_modifier, pricing_rule_obj.property.base_price, total_specific_day,
-                                              stay_length, count_specific_day)
-
-        data_out = booking_utility.generate_data_out_json(pricing_rule_obj.property.base_price, date_start, date_end, pricing_rule_obj)
+        data_out = booking_utility.generate_data_out_json(final_price,pricing_rule_obj.property.base_price,
+                                                          date_start, date_end, pricing_rule_obj)
 
         booking = Booking()
         booking.property= pricing_rule_obj.property

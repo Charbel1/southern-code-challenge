@@ -117,7 +117,7 @@ class PricingRuleLogic():
                                                ).aggregate(Max('price_modifier'))["price_modifier__max"]
         return self._max_value
 
-    def get_max_pricing_rule_obj(self,price_modifier : int,property_id : int,stay_length : int) -> PricingRule:
+    def filter_get_max_pricing_rule_obj(self, price_modifier : int, property_id : int, stay_length : int) -> PricingRule:
         """
                returns the max pricing rule that satisfies the interval
 
@@ -130,6 +130,9 @@ class PricingRuleLogic():
                                                         property_id=property_id,
                                                         min_stay_length__lte=stay_length)) \
             .order_by("id").first()
+        return self._max_pricing_rule_obj
+
+    def get__max_pricing_rule_obj(self) -> PricingRule:
         return self._max_pricing_rule_obj
 
     def get_specifict_days_with_max_fixed_price_rule(self,property_id : int, stay_length : int,
@@ -158,10 +161,6 @@ class PricingRuleLogic():
                     exclude.append(pricing_rule.id)
 
         total = pricing_rules_spe_day.exclude(id__in=exclude)
-
-
-
-
 
 
         list_specif_day_fix_pric= total.values('specific_day').annotate(max_id=Max('fixed_price'))

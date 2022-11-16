@@ -4,8 +4,9 @@ from core.models import PricingRule
 
 
 class BookingLogic():
-    specific_day =[]
 
+    def __init__(self):
+        self.specific_day = []
     def get_final_price(self)  -> float:
         """
                   returns Final price
@@ -26,6 +27,7 @@ class BookingLogic():
                       :returns: sum of specific day
                       """
         suma = 0
+        aux = ""
         for value in list_specific_day:
             aux =f"specific_day {value['specific_day']}, fixed_price: {value['max_id']}"
             self.specific_day.append(aux)
@@ -61,7 +63,7 @@ class BookingLogic():
         return self.total_all
 
 
-    def generate_data_out_json(self, base_price :int, date_start : datetime, date_end :datetime,
+    def generate_data_out_json(self,final_value:float, base_price :int, date_start : datetime, date_end :datetime,
                                pricing_rule : PricingRule) -> dict:
         """
                       returns dict of booking data
