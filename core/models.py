@@ -65,5 +65,3 @@ class Booking(models.Model):
     """date_end: Last date of the booking"""
     final_price = models.FloatField(null=True, blank=True)
     """final_price: Calculated final price"""
-    costumer_id = models.CharField(max_length=255, blank=True, null=True)
-    """costumer_id: id of the person who placed the booking"""

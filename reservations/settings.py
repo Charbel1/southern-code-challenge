@@ -9,7 +9,7 @@ https://docs.djangoproject.com/en/4.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.0/ref/settings/
 """
-
+# https://southern-code-challenge.herokuapp.com/
 from pathlib import Path
 
 
@@ -119,11 +119,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-# Default primary key field type
+# Default primaryhttps://southern-code-challenge.herokuapp.com/ key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-import django_on_heroku
-django_on_heroku.settings(locals())
