@@ -18,7 +18,17 @@ class PricingRuleLogic():
         self._fixed_price : float = None
         self._specific_day : datetime = None
 
-    def validate_data(self,data:dict):
+
+    def validate_data(self,data:dict) -> None:
+        """
+        the data passed in the form of a dic is validated
+
+        :param data: data to send pricing_rule_id, property_id,
+        price_modifier , min_stay_length , fixed_price , specific_day
+
+        :returns: None
+        :raises ValueError: is generated when formatting not correct
+        """
 
         utility_date = ValidationDate()
 
@@ -44,7 +54,14 @@ class PricingRuleLogic():
             if data["specific_day"] is not None:
                 self._specific_day = utility_date.parse_formate_date(data["specific_day"])
 
-    def create_pricing_rule(self):
+    def create_pricing_rule(self) -> PricingRule:
+        """
+        the principle rule is created with the validation values
+
+
+        :returns: an object of type princingRule
+
+        """
         self._pricing_rule = PricingRule()
         self._pricing_rule.property_id = self._property.id
         self._pricing_rule.price_modifier = self._price_modifier
@@ -54,7 +71,13 @@ class PricingRuleLogic():
         self._pricing_rule.save()
         return self._pricing_rule
 
-    def update_pricing_rule(self):
+    def update_pricing_rule(self) -> PricingRule:
+        """
+              update pricing rule
+
+              :returns: an object of type princingRule
+              """
+
         self._pricing_rule.price_modifier = self._price_modifier
         self._pricing_rule.min_stay_length = self._min_stay_length
         self._pricing_rule.fixed_price = self._fixed_price
@@ -62,19 +85,47 @@ class PricingRuleLogic():
         self._pricing_rule.save()
         return  self._pricing_rule
 
-    def get_max_stay_length_pricing_rule_property(self, property_id :int , stay_length :int ):
+
+    def get_max_stay_length_pricing_rule_property(self, property_id :int , stay_length :int ) -> int:
+        """
+              obtain the largest stay length of a property in a given interval
+
+              :param property_id: property id
+              :param stay_length: number of booking days
+              :returns: returns the greatest of the minimum time of stay of a rule
+
+              """
+
         self._max_stay_length = PricingRule.objects.filter(property_id=property_id, min_stay_length__lte=stay_length)\
             .aggregate(Max('min_stay_length'))["min_stay_length__max"]
         return self._max_stay_length
 
-    def get_max_value_pricing_rule_property(self,max_stay_length : int , property_id :int , stay_length :int ):
+    def get_max_value_pricing_rule_property(self,max_stay_length : int , property_id :int , stay_length :int ) -> int:
+        """
+              returns the largest princingrule modifier
+
+              :param max_stay_length: max stay length
+              :param property_id: property id
+              :param stay_length: number of booking days
+              :returns: this is a description of what is returned
+              :raises keyError: raises an exception
+              """
+
         self._max_value = PricingRule.objects.filter(Q(min_stay_length= max_stay_length,
                                                  property_id=property_id,
                                                  min_stay_length__lte=stay_length)
                                                ).aggregate(Max('price_modifier'))["price_modifier__max"]
         return self._max_value
 
-    def get_max_pricing_rule_obj(self,price_modifier,property_id,stay_length):
+    def get_max_pricing_rule_obj(self,price_modifier : int,property_id : int,stay_length : int) -> PricingRule:
+        """
+               returns the max pricing rule that satisfies the interval
+
+               :param price_modifier: max price modifier
+               :param property_id: property id
+               :param stay_length: number of booking days
+               :returns: obj PricingRule
+               """
         self._max_pricing_rule_obj = PricingRule.objects.filter(Q(price_modifier=price_modifier,
                                                         property_id=property_id,
                                                         min_stay_length__lte=stay_length)) \
@@ -82,7 +133,18 @@ class PricingRuleLogic():
         return self._max_pricing_rule_obj
 
     def get_specifict_days_with_max_fixed_price_rule(self,property_id : int, stay_length : int,
-                                                     date_start : datetime, date_end : datetime):
+                                                     date_start : datetime, date_end : datetime) -> list:
+        """
+                  get all the dates where there is a price modification in the given indexed
+
+                  :param property_id: property id
+                  :param stay_length: number of booking days
+                  :param date_start: date start of the interval to search
+                  :param date_start: date start of the interval to search
+
+
+                  :returns: ("specific_day":datetime , "fixed_price":int)
+                  """
         query_date = Q()
         query_date &= Q(specific_day__range=(date_start,date_end))
         pricing_rules = PricingRule.objects.filter(Q(property_id=property_id, min_stay_length__lte=stay_length))
