@@ -1,6 +1,9 @@
 from django.db.models import Q
 from django.http import HttpResponse
 from django.http import JsonResponse
+from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK
+from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 
 from core.models import Property
@@ -16,11 +19,10 @@ class PropertyCreateView(APIView):
         property_seri = PropertySerializer(data=request.data)
         if property_seri.is_valid():
             property_obj= property_seri.save()
-            return HttpResponse(JsonResponse({"property_id": property_obj.id}), content_type="application/json",
-                                status=200)
+            return Response({"property_id": property_obj.id}, status=HTTP_200_OK)
 
 
-        return HttpResponse(JsonResponse({"Error": property_seri.errors}), content_type="application/json", status=400)
+        return Response({"Error": property_seri.errors}, status=HTTP_400_BAD_REQUEST)
 
 
 
@@ -30,7 +32,7 @@ class GetModifyDeleteOnePropertyDataView(APIView):
 
         property_out = Property.objects.get(id = id).get_json_data()
 
-        return HttpResponse(JsonResponse({"data_out":property_out}),content_type="application/json", status=200)
+        return Response({"data_out":property_out}, status=HTTP_200_OK)
 
     def put(self, request,id,format=None):
 
@@ -41,17 +43,16 @@ class GetModifyDeleteOnePropertyDataView(APIView):
             try:
                 property_obj = Property.objects.get(id=id)
             except Property.DoesNotExist:
-                return HttpResponse(JsonResponse({"error":"Property id Error"}), content_type="application/json",
-                                    status=400)
+                return Response({"error":"Property id Error"}, status=HTTP_400_BAD_REQUEST)
+
 
             property_obj.name = request.data["name"]
             property_obj.base_price=request.data["base_price"]
             property_obj.type = request.data["type"]
+            return Response({"success": "data updated"}, status=HTTP_200_OK)
 
-            return HttpResponse(JsonResponse({"success": "data updated"}), content_type="application/json",
-                                status=200)
 
-        return HttpResponse(JsonResponse({"Error": property_seri.errors}), content_type="application/json", status=400)
+        return Response({"Error": property_seri.errors}, status=HTTP_400_BAD_REQUEST)
 
 
     def delete(self, request, id, format=None):
@@ -60,8 +61,7 @@ class GetModifyDeleteOnePropertyDataView(APIView):
         except Property.DoesNotExist:
             return HttpResponse(JsonResponse({"error": "property does not exist"}), content_type="application/json",
                                 status=400)
-
-        return HttpResponse(JsonResponse({"success": "property delete"}), content_type="application/json", status=200)
+        return Response({"success": "property delete"}, status=HTTP_200_OK)
 
 
 class GetAllPropertyDataView(APIView):
@@ -76,4 +76,4 @@ class GetAllPropertyDataView(APIView):
         for property in property_list:
             data_out.append(property.get_json_data())
 
-        return HttpResponse(JsonResponse({"data":data_out}),content_type="application/json", status=200)
+        return Response({"data":data_out},status=HTTP_200_OK)

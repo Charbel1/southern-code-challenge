@@ -1,5 +1,6 @@
-from django.http import HttpResponse
-from django.http import JsonResponse
+from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK
+from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 
 from core.logic.pricing_rule_logic import PricingRuleLogic
@@ -14,9 +15,7 @@ class GetPrincingRulePropertyView(APIView):
         list_princing_rule = PricingRule.objects.filter(property_id=property_id)
         for pricing_rule in list_princing_rule:
             data_out.append(pricing_rule.get_json_data())
-
-        return HttpResponse(JsonResponse({"pricing_rule_list": data_out}), content_type="application/json",
-                            status=200)
+        return Response({"pricing_rule_list": data_out}, status=HTTP_200_OK)
 
 class CreatePrincingRulePropertyView(APIView):
     def post(self, request):
@@ -25,30 +24,23 @@ class CreatePrincingRulePropertyView(APIView):
             pricing_logic.validate_data(request.data)
             pricing_rule_obj = pricing_logic.create_pricing_rule()
         except Property.DoesNotExist:
-           return HttpResponse(JsonResponse({"error": "property does not exist" }), content_type="application/json",
-                               status=400)
+            return Response({"Error": "property does not exist"}, status=HTTP_400_BAD_REQUEST)
+
         except Exception:
-            return HttpResponse(JsonResponse({"error": "Error format data"}), content_type="application/json",
-                                status=400)
+            return Response({"Error": "Error format data"}, status=HTTP_400_BAD_REQUEST)
 
-
-        return HttpResponse(JsonResponse({"pricing_rule_id": pricing_rule_obj.id}), content_type="application/json", status=200)
-
-
+        return Response({"pricing_rule_id": pricing_rule_obj.id}, status=HTTP_200_OK)
 class GetOnePrincingRulePropertyView(APIView):
     def get(self, request, pricing_id):
         data_out = PricingRule.objects.get(id=pricing_id).get_json_data()
 
-        return HttpResponse(JsonResponse({"pricing_rule": data_out}), content_type="application/json",
-                            status=200)
-
+        return Response({"pricing_rule": data_out}, status=HTTP_200_OK)
 
 class DeleteOnePricingRuleProperty(APIView):
 
     def delete(self, request, pricing_id):
         PricingRule.objects.get(id=pricing_id).delete()
-
-        return HttpResponse(JsonResponse({"success": "pricing rule delete"}), content_type="application/json", status=200)
+        return Response({"success": "pricing rule delete"}, status=HTTP_200_OK)
 
 class UpdateOnePricingRuleProperty(APIView):
     def put(self, request):
@@ -57,11 +49,9 @@ class UpdateOnePricingRuleProperty(APIView):
             pricing_logic.validate_data(request.data)
             pricing_logic.update_pricing_rule()
         except PricingRule.DoesNotExist:
-            return HttpResponse(JsonResponse({"error": "pricing_rule does not exist"}), content_type="application/json",
-                                status=400)
-        except Exception:
-            return HttpResponse(JsonResponse({"error": "Error format data"}), content_type="application/json",
-                                status=400)
+            return Response({"Error": "pricing_rule does not exist"}, status=HTTP_400_BAD_REQUEST)
 
-        return HttpResponse(JsonResponse({"success": "update pricing rule"}), content_type="application/json",
-                            status=200)
+        except Exception:
+            return Response({"Error": "Error format data"}, status=HTTP_400_BAD_REQUEST)
+
+        return Response({"success": "update pricing rule"}, status=HTTP_200_OK)

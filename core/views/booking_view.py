@@ -1,5 +1,6 @@
-from django.http import HttpResponse
-from django.http import JsonResponse
+from rest_framework.response import Response
+from rest_framework.status import HTTP_200_OK
+from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
 
 from core.logic.pricing_rule_logic import PricingRuleLogic
@@ -24,13 +25,13 @@ class SetBookingView(APIView):
         date_end = valid_utility.parse_formate_date(date_end_format)
 
         if valid_utility.validate_change_greater(date_start,date_end):
-            return HttpResponse(JsonResponse({"error": "order of dates is reversed"}), content_type="application/json",
-                                status=200)
+            return Response({"Error": "order of dates is reversed"}, status=HTTP_400_BAD_REQUEST)
+
         try:
             final_price =utility.calcutate_final_price_booking(property_id, date_start_format, date_end_format)
         except Property.DoesNotExist:
-            return HttpResponse(JsonResponse({"error": "property does not exist"}), content_type="application/json",
-                                status=400)
+            return Response({"Error": "property does not exist"}, status=HTTP_400_BAD_REQUEST)
+
         pricing_rule_obj = utility.get_pricing_rule_obj_generate()
         booking_utility = utility.get_booking_utility()
         property =utility.get_property()
@@ -46,8 +47,7 @@ class SetBookingView(APIView):
         booking.save()
         data_out["booking_id"] = booking.id
 
-        return HttpResponse(JsonResponse({"data": data_out}), content_type="application/json",
-                            status=200)
+        return Response({"data": data_out}, status=HTTP_200_OK)
 
 class GetBookingPropertyView(APIView):
     def get(self,request,property_id):
@@ -56,8 +56,7 @@ class GetBookingPropertyView(APIView):
         for booking in booking_list:
             data_out.append(booking.get_json_data())
 
-        return HttpResponse(JsonResponse({"data": data_out}), content_type="application/json",
-                            status=200)
+        return Response({"data": data_out}, status=HTTP_200_OK)
 
 class GetAllBookingView(APIView):
     def get(self,request):
@@ -66,8 +65,7 @@ class GetAllBookingView(APIView):
         for booking in booking_list:
             data_out.append(booking.get_json_data())
 
-        return HttpResponse(JsonResponse({"data": data_out}), content_type="application/json",
-                            status=200)
+        return Response({"data": data_out}, status=HTTP_200_OK)
 
 
 class GetBookingByIdView(APIView):
@@ -77,7 +75,6 @@ class GetBookingByIdView(APIView):
         for booking in booking_list:
             data_out.append(booking.get_json_data())
 
-        return HttpResponse(JsonResponse({"data": data_out}), content_type="application/json",
-                            status=200)
+        return Response({"data": data_out}, status=HTTP_200_OK)
 
 
