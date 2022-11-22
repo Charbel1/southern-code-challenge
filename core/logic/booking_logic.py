@@ -26,14 +26,13 @@ class BookingLogic():
 
                       :returns: sum of specific day
                       """
-        suma = 0
-        aux = ""
+        sum = 0
         for value in list_specific_day:
             aux =f"specific_day {value['specific_day']}, fixed_price: {value['max_id']}"
             self.specific_day.append(aux)
-            suma += value["max_id"]
+            sum += value["max_id"]
 
-        return suma
+        return sum
 
 
     def calculate_final_price(self, price_modifier : float, property_base_price :float , total_specific_day :float,
@@ -56,7 +55,6 @@ class BookingLogic():
                           property_base_price
 
         total_base = ((stay_length - count_specific_day) * valor_with_desc)
-        # desc = (max_pricing_rule.price_modifier *  total_base) / 100
         self.total_all = total_base + total_specific_day
 
 

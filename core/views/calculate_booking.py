@@ -3,7 +3,7 @@ from datetime import datetime
 from core.logic.booking_logic import BookingLogic
 from core.logic.pricing_rule_logic import PricingRuleLogic
 from core.models import Property
-from core.utility.utility_code import ValidationDate
+from core.utility.utility_code import DateValidation
 
 
 class UtilityCalculateBooking():
@@ -12,10 +12,10 @@ class UtilityCalculateBooking():
         _pricing_rule_obj = None
         _booking = None
         _property = None
-    def calcutate_final_price_booking(self,property_id : int, date_start_format : datetime, date_end_format:datetime):
+    def calcutate_final_booking_price(self, property_id : int, date_start_format : datetime, date_end_format:datetime):
         pricing_utility = PricingRuleLogic()
         booking_utility = BookingLogic()
-        valid_utility = ValidationDate()
+        valid_utility = DateValidation()
         property = Property.objects.get(id= property_id)
         date_start = valid_utility.parse_formate_date(date_start_format)
         date_end = valid_utility.parse_formate_date(date_end_format)

@@ -31,7 +31,7 @@ class TestSetBookingView(TestCase):
         date_start  = "11-1-2022"
         date_end    = "11-10-2022"
 
-        final_value = utility.calcutate_final_price_booking(pro.id,date_start,date_end)
+        final_value = utility.calcutate_final_booking_price(pro.id, date_start, date_end)
         pro.delete()
         pricing_rule.delete()
 
@@ -58,7 +58,7 @@ class TestSetBookingView(TestCase):
 
         date_start = "11-1-2022"
         date_end = "11-10-2022"
-        final_value = utility.calcutate_final_price_booking(pro.id, date_start, date_end)
+        final_value = utility.calcutate_final_booking_price(pro.id, date_start, date_end)
         pro.delete()
         pricing_rule.delete()
         pricing_rule2.delete()
@@ -87,7 +87,7 @@ class TestSetBookingView(TestCase):
 
         date_start = "11-1-2022"
         date_end = "11-10-2022"
-        final_value = utility.calcutate_final_price_booking(pro.id, date_start, date_end)
+        final_value = utility.calcutate_final_booking_price(pro.id, date_start, date_end)
         pro.delete()
         pricing_rule.delete()
         pricing_rule2.delete()
@@ -122,7 +122,7 @@ class TestSetBookingView(TestCase):
 
         date_start = "11-1-2022"
         date_end = "11-10-2022"
-        final_value = utility.calcutate_final_price_booking(pro.id, date_start, date_end)
+        final_value = utility.calcutate_final_booking_price(pro.id, date_start, date_end)
         pro.delete()
         pricing_rule.delete()
         pricing_rule2.delete()
@@ -157,7 +157,7 @@ class TestSetBookingView(TestCase):
 
         date_start = "11-1-2022"
         date_end = "11-10-2022"
-        final_value = utility.calcutate_final_price_booking(pro.id, date_start, date_end)
+        final_value = utility.calcutate_final_booking_price(pro.id, date_start, date_end)
         pro.delete()
         pricing_rule.delete()
         pricing_rule2.delete()
@@ -188,7 +188,7 @@ class TestSetBookingView(TestCase):
 
         date_start = "11-1-2022"
         date_end = "11-10-2022"
-        final_value = utility.calcutate_final_price_booking(pro.id, date_start, date_end)
+        final_value = utility.calcutate_final_booking_price(pro.id, date_start, date_end)
         pro.delete()
         pricing_rule.delete()
         pricing_rule2.delete()

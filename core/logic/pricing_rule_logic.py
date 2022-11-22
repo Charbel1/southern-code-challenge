@@ -5,7 +5,7 @@ from django.db.models import Q
 
 from core.models import PricingRule
 from core.models import Property
-from core.utility.utility_code import ValidationDate
+from core.utility.utility_code import DateValidation
 
 
 class PricingRuleLogic():
@@ -30,7 +30,7 @@ class PricingRuleLogic():
         :raises ValueError: is generated when formatting not correct
         """
 
-        utility_date = ValidationDate()
+        utility_date = DateValidation()
 
         if "pricing_rule_id" in data:
             self._pricing_rule = PricingRule.objects.get(id=data["pricing_rule_id"])
