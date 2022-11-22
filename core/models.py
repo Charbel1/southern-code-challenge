@@ -86,3 +86,4 @@ class Booking(models.Model):
                 "booking_id "          :self.id
                 }
         return data_out
+

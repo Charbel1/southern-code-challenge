@@ -67,6 +67,7 @@ class GetModifyDeleteOnePropertyDataView(APIView):
 class GetAllPropertyDataView(APIView):
     def get(self, request,format=None):
         data_out = []
+
         type = request.GET.get('type', "")
         if type != "" :
             property_list = Property.objects.filter(Q(type=type))

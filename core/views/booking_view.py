@@ -61,6 +61,7 @@ class GetBookingPropertyView(APIView):
 class GetAllBookingView(APIView):
     def get(self,request):
         data_out = []
+
         booking_list = Booking.objects.filter()
         for booking in booking_list:
             data_out.append(booking.get_json_data())

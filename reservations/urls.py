@@ -15,13 +15,13 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import include
 from django.urls import path
 from rest_framework.authtoken.views import obtain_auth_token
 
 import core.views.booking_view
 import core.views.pricing_rule_view
 import core.views.property_view
+from core.views.user_view import UserCrud
 
 property = [
         path('get_modify_delete_one_property/<int:id>',
@@ -54,11 +54,15 @@ booking = [
     path('get_booking/<int:booking_id>', core.views.booking_view.GetBookingByIdView.as_view())
         ]
 
+user = [
+        path('login/', obtain_auth_token),
+        path('create_user',UserCrud.as_view())
+
+        ]
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api-auth/', include('rest_framework.urls')),
-    path('login/', obtain_auth_token)
+
 
 
 ]
-urlpatterns = urlpatterns+booking+pricing_rule+property
+urlpatterns = urlpatterns+booking+pricing_rule+property+user
